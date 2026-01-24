@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AURA - Kết quả đã duyệt</title>
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background: #f6f8fb;
+      }
+      .card-soft {
+        border: 1px solid #e9edf5;
+        border-radius: 16px;
+      }
+      .shadow-soft {
+        box-shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
+      }
+      .soft-btn {
+        border-radius: 12px;
+      }
+      .img-wrap {
+        background: #0b1220;
+        min-height: 520px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .pill {
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+      .pill-low {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+      .muted-box {
+        background: #f8fafc;
+        border: 1px dashed #e2e8f0;
+        border-radius: 12px;
+        padding: 12px;
+      }
+      textarea:disabled {
+        background: #f8fafc;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container-fluid py-3">
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <div class="text-muted small">AURA Doctor / Result</div>
+          <h3 class="fw-bold mb-0">📄 Kết quả chẩn đoán đã duyệt</h3>
+        </div>
+
+        <div class="d-flex gap-2">
+          <a href="/doctor/home" class="btn btn-outline-secondary soft-btn">
+            ← Quay lại
+          </a>
+          <a href="/logout" class="btn btn-outline-dark soft-btn">
+            Đăng xuất
+          </a>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <!-- LEFT: IMAGE -->
+        <div class="col-12 col-lg-8">
+          <div class="card card-soft shadow-soft h-100">
+            <div class="card-header fw-bold">Ảnh đáy mắt (Fundus)</div>
+
+            <div class="img-wrap p-3">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/2/23/Fundus_photograph_of_normal_right_eye.jpg"
+                alt="Fundus"
+                style="
+                  max-width: 100%;
+                  max-height: 480px;
+                  border-radius: 12px;
+                  border: 1px solid rgba(255, 255, 255, 0.2);
+                "
+              />
+            </div>
+
+            <div class="text-center text-muted small p-2">
+              Image ID: <b>IMG-2025-002</b> • Patient:
+              <b>SP26-002</b>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: RESULT -->
+        <div class="col-12 col-lg-4">
+          <!-- AI RESULT -->
+          <div class="card card-soft shadow-soft mb-3">
+            <div class="card-header bg-primary text-white fw-bold">
+              🤖 Kết quả AI
+            </div>
+            <div class="card-body">
+              <span class="pill pill-low"> Nguy cơ: LOW • 12% </span>
+
+              <div class="muted-box small mt-3">
+                AI không phát hiện dấu hiệu bất thường đáng kể tại thời điểm
+                phân tích.
+              </div>
+
+              <div class="text-muted small mt-2">
+                AI Model: <b>AURA-v1.2</b><br />
+                Analyzed at: <b>14/12/2025 09:40</b>
+              </div>
+            </div>
+          </div>
+
+          <!-- DOCTOR CONCLUSION -->
+          <div class="card card-soft shadow-soft">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <span class="fw-bold"> 👨‍⚕️ Kết luận bác sĩ </span>
+
+              <button
+                class="btn btn-sm btn-outline-primary soft-btn"
+                type="button"
+                onclick="enableEdit()"
+              >
+                ✏️ Chỉnh sửa
+              </button>
+            </div>
+
+            <div class="card-body">
+              <div class="mb-3">
+                <label class="fw-bold mb-1"> Chẩn đoán </label>
+                <textarea id="diagnosis" class="form-control" rows="3" disabled>
+Không ghi nhận tổn thương võng mạc.</textarea
+                >
+              </div>
+
+              <div class="mb-3">
+                <label class="fw-bold mb-1"> Khuyến nghị </label>
+                <textarea
+                  id="recommendation"
+                  class="form-control"
+                  rows="3"
+                  disabled
+                >
+Theo dõi định kỳ sau 6–12 tháng.</textarea
+                >
+              </div>
+
+              <button
+                id="saveBtn"
+                class="btn btn-success soft-btn d-none"
+                type="button"
+                onclick="saveEdit()"
+              >
+                💾 Lưu thay đổi
+              </button>
+
+              <div class="text-muted small mt-3">
+                ✔ Kết luận đã được bác sĩ xác nhận. Mọi chỉnh sửa đều được ghi
+                nhận để truy vết y khoa.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JS -->
+    <script>
+      function enableEdit() {
+        document.getElementById("diagnosis").disabled = false;
+        document.getElementById("recommendation").disabled = false;
+        document.getElementById("saveBtn").classList.remove("d-none");
+      }
+
+      function saveEdit() {
+        alert("✅ Đã lưu thay đổi kết luận bác sĩ");
+
+        // Sau này gọi API backend tại đây
+
+        document.getElementById("diagnosis").disabled = true;
+        document.getElementById("recommendation").disabled = true;
+        document.getElementById("saveBtn").classList.add("d-none");
+      }
+    </script>
+  </body>
+</html>

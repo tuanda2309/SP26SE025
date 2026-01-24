@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Notification Management</title>
+
+    <link rel="stylesheet" href="/admin/css/base.css">
+    <link rel="stylesheet" href="/admin/css/notifications.css">
+
+    <style>
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 8px; border-bottom: 1px solid #ddd; }
+        textarea { width: 100%; height: 60px; }
+        input, select { width: 100%; }
+        button { margin-right: 5px; }
+        .danger { color: red; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>ADMIN</h2>
+    <a href="/admin/home">Dashboard</a>
+    <a href="/admin/users">Users</a>
+    <a href="/admin/doctors">Doctors</a>
+    <a href="/admin/clinics" class="active">Clinics</a>
+    <a href="/admin/packages">Packages</a>
+    <a href="/admin/ai-management">AI Management</a>
+    <a href="http://localhost:8080/admin/notifications">Notifications</a>
+    <a href="/admin/reports">Reports</a>
+
+<div class="main">
+    <h1>Notification Management</h1>
+
+    <!-- ADD AREA -->
+    <div style="margin-bottom: 12px;">
+        <select id="userSelect">
+            <option value="">-- Chọn User --</option>
+        </select>
+
+        <button onclick="addNotification()">+ Add Notification</button>
+        <button onclick="addNotificationForAll()">📢 Send to ALL</button>
+    </div>
+
+    <!-- TABLE -->
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>User ID</th>
+            <th>Title</th>
+            <th>Message</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="notificationTable">
+        <!-- JS render -->
+        </tbody>
+    </table>
+</div>
+
+<script src="/admin/js/notifications.js"></script>
+</body>
+</html>

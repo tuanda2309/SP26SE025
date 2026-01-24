@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctor Management</title>
+    <link rel="stylesheet" th:href="@{/admin/css/base.css}">
+   <link rel="stylesheet" th:href="@{/admin/css/ai-management.css}">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>ADMIN</h2>
+    <a href="http://localhost:8080/admin/home">Dashboard</a>
+    <a href="http://localhost:8080/admin/users">Users</a>
+    <a href="http://localhost:8080/admin/doctors" class="active">Doctors</a>
+    <a href="http://localhost:8080/admin/clinics">Clinics</a>
+    <a href="http://localhost:8080/admin/packages">Packages</a>
+    <a href="http://localhost:8080/admin/ai">AI Management</a>
+    <a href="http://localhost:8080/admin/notifications">Notifications</a>
+    <a href="http://localhost:8080/admin/reports">Reports</a>
+</div>
+<div class="main">
+    <h1>AI Configuration</h1>
+
+    <div class="card" style="width:400px;">
+        <p><b>AI Engine Status:</b>
+            <span class="status online">ONLINE</span>
+        </p>
+
+        <label>Risk Threshold (%)</label>
+        <input type="number" id="threshold" value="70">
+
+        <label>AI Model Version</label>
+        <input type="text" value="AURA-v1.2" disabled>
+
+        <br><br>
+        <button onclick="saveAIConfig()">Save Configuration</button>
+        <button class="danger" onclick="toggleAI()">Disable AI</button>
+    </div>
+
+    <h3 style="margin-top:20px;">AI Logs</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Action</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>26/12/2025 10:00</td>
+                <td>Image Analysis</td>
+                <td>Success</td>
+            </tr>
+            <tr>
+                <td>26/12/2025 10:15</td>
+                <td>Model Load</td>
+                <td>Success</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="../../static/admin/js/ai-management.js"></script>
+</body>
+</html>

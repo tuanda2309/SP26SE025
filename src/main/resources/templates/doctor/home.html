@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AURA - Doctor Dashboard</title>
+
+    <!-- Bootstrap 5 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      .app-shell {
+        min-height: 100vh;
+        background: #f6f8fb;
+      }
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: #ffffffcc;
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid #e9edf5;
+      }
+      .brand-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #0d6efd;
+        display: inline-block;
+        margin-right: 8px;
+      }
+      .kpi-card {
+        border: 1px solid #e9edf5;
+        border-radius: 16px;
+      }
+      .kpi-value {
+        font-size: 28px;
+        font-weight: 800;
+      }
+      .pill {
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 0.85rem;
+        font-weight: 700;
+      }
+      .pill-high {
+        background: #ffebee;
+        color: #c62828;
+      }
+      .pill-medium {
+        background: #fff8e1;
+        color: #8d6e63;
+      }
+      .pill-low {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+      .table-card {
+        border: 1px solid #e9edf5;
+        border-radius: 16px;
+        overflow: hidden;
+      }
+      .soft-btn {
+        border-radius: 12px;
+      }
+      .search-input {
+        border-radius: 12px;
+      }
+      .shadow-soft {
+        box-shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
+      }
+    </style>
+  </head>
+
+  <body class="app-shell">
+    <!-- Topbar -->
+    <div class="topbar">
+      <div
+        class="container py-3 d-flex justify-content-between align-items-center"
+      >
+        <div class="d-flex align-items-center gap-2">
+          <span class="brand-dot"></span>
+          <div>
+            <div class="fw-bold">AURA Doctor</div>
+            <div class="text-muted small">Clinical Decision Support (CDS)</div>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <button
+            class="btn btn-outline-primary soft-btn"
+            type="button"
+            onclick="window.location.reload(true);"
+          >
+            ⟳ Làm mới
+          </button>
+
+          <a class="btn btn-outline-dark soft-btn" href="/logout">
+            Đăng xuất
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container my-4">
+      <!-- Header -->
+      <div
+        class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3"
+      >
+        <div>
+          <h2 class="mb-1 fw-bold">👨‍⚕️ Danh sách bệnh nhân cần duyệt</h2>
+          <div class="text-muted">
+            Theo dõi ca rủi ro, duyệt kết quả AI và gửi khuyến nghị.
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI cards -->
+      <div class="row g-3 mb-3">
+        <div class="col-12 col-md-4">
+          <div class="card kpi-card shadow-soft">
+            <div class="card-body">
+              <div class="text-muted small">Tổng ca hôm nay</div>
+              <div class="kpi-value">12</div>
+              <div class="text-muted small">+3 so với hôm qua</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="card kpi-card shadow-soft">
+            <div class="card-body">
+              <div class="text-muted small">Nguy cơ cao</div>
+              <div class="kpi-value text-danger">3</div>
+              <div class="text-muted small">Ưu tiên duyệt trước</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="card kpi-card shadow-soft">
+            <div class="card-body">
+              <div class="text-muted small">Chờ duyệt</div>
+              <div class="kpi-value text-warning">5</div>
+              <div class="text-muted small">Cần xác nhận bác sĩ</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter -->
+      <div class="card kpi-card shadow-soft mb-3">
+        <div class="card-body">
+          <div class="row g-2 align-items-end">
+            <div class="col-12 col-md-5">
+              <label class="form-label small text-muted mb-1"> Tìm kiếm </label>
+              <input
+                type="text"
+                id="searchInput"
+                class="form-control search-input"
+                placeholder="🔍 Tìm theo tên hoặc ID..."
+              />
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label class="form-label small text-muted mb-1">
+                Mức độ rủi ro
+              </label>
+              <select id="riskFilter" class="form-select search-input">
+                <option value="ALL">Tất cả</option>
+                <option value="HIGH">🔴 High</option>
+                <option value="MEDIUM">🟡 Medium</option>
+                <option value="LOW">🟢 Low</option>
+              </select>
+            </div>
+
+            <div class="col-12 col-md-3 d-grid">
+              <button
+                class="btn btn-primary soft-btn"
+                type="button"
+                onclick="applyFilter()"
+              >
+                Lọc
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-card shadow-soft bg-white">
+        <div
+          class="p-3 border-bottom d-flex justify-content-between align-items-center"
+        >
+          <div class="fw-bold">Danh sách ca</div>
+          <div class="text-muted small">Hiển thị 1–10</div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>ID</th>
+                <th>Bệnh nhân</th>
+                <th>Ngày chụp</th>
+                <th>Đánh giá AI</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr data-risk="HIGH">
+                <td class="fw-semibold">SP26-001</td>
+                <td>
+                  <div class="fw-semibold">Nguyễn Văn A</div>
+                  <div class="text-muted small">IMG-2025-001</div>
+                </td>
+                <td>15/12/2025</td>
+                <td>
+                  <span class="pill pill-high">High • 92%</span>
+                </td>
+                <td>
+                  <span class="badge bg-warning text-dark"> Chờ duyệt </span>
+                </td>
+                <td>
+                  <a
+                    href="/doctor/review"
+                    class="btn btn-sm btn-primary soft-btn"
+                  >
+                    Xem chi tiết
+                  </a>
+                </td>
+              </tr>
+
+              <tr data-risk="LOW">
+                <td class="fw-semibold">SP26-002</td>
+                <td>
+                  <div class="fw-semibold">Trần Thị B</div>
+                  <div class="text-muted small">IMG-2025-002</div>
+                </td>
+                <td>14/12/2025</td>
+                <td>
+                  <span class="pill pill-low">Low • 12%</span>
+                </td>
+                <td>
+                  <span class="badge bg-success">Đã xong</span>
+                </td>
+                <td>
+              <a href="/doctor/result" class="btn btn-sm btn-outline-secondary soft-btn">
+  Xem lại
+</a>
+
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div
+          class="p-3 border-top d-flex justify-content-between align-items-center"
+        >
+          <div class="text-muted small">Tip: Duyệt “High risk” trước.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JS FILTER -->
+    <script>
+      function applyFilter() {
+        const risk = document.getElementById("riskFilter").value;
+        const keyword = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+
+        const rows = document.querySelectorAll("tbody tr");
+
+        rows.forEach((row) => {
+          const rowRisk = row.getAttribute("data-risk");
+          const rowText = row.innerText.toLowerCase();
+
+          const matchRisk = risk === "ALL" || rowRisk === risk;
+          const matchText = keyword === "" || rowText.includes(keyword);
+
+          row.style.display = matchRisk && matchText ? "" : "none";
+        });
+      }
+    </script>
+  </body>
+</html>

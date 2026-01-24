@@ -1,0 +1,21 @@
+# ===== Python =====
+__pycache__/
+*.pyc
+*.pyo
+
+# ===== Virtual env =====
+venv/
+.env/
+
+# ===== Model files =====
+*.pth
+*.h5
+*.onnx
+
+# ===== Dataset =====
+data/
+
+# ===== Generated =====
+outputs/
+logs/
+*.log

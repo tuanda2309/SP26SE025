@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thống kê Doanh thu | Hệ thống Phòng khám</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Nunito', sans-serif; background: linear-gradient(to right, #f8f9fa, #e9ecef); padding: 20px; }
+        .container-stats { max-width: 1400px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .stat-card { border: none; border-radius: 12px; padding: 20px; color: white; height: 100%; transition: transform 0.3s; position: relative; overflow: hidden; }
+        .stat-card:hover { transform: translateY(-5px); }
+        .bg-gradient-primary { background: linear-gradient(45deg, #4e73df, #224abe); }
+        .bg-gradient-success { background: linear-gradient(45deg, #1cc88a, #13855c); }
+        .bg-gradient-warning { background: linear-gradient(45deg, #f6c23e, #dda20a); }
+        .chart-container { position: relative; height: 350px; width: 100%; }
+        .card-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 3rem; opacity: 0.2; }
+    </style>
+</head>
+<body>
+
+<div class="container container-stats">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary"><i class="fas fa-chart-line me-2"></i> Thống kê Doanh thu</h2>
+        <a th:href="@{/clinic/home}" class="btn btn-outline-secondary rounded-pill px-4">
+            <i class="fas fa-arrow-left me-1"></i> Dashboard
+        </a>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form th:action="@{/clinic/reports/summary}" method="get" class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label fw-bold text-secondary">Chọn Năm</label>
+                    <select class="form-select" name="year" onchange="this.form.submit()">
+                        <option value="2025" th:selected="${selectedYear == 2025}">2025</option>
+                        <option value="2026" th:selected="${selectedYear == 2026}">2026</option>
+                        <option value="2027" th:selected="${selectedYear == 2027}">2027</option>
+                    </select>
+                </div>
+
+                <div class="col-md-9 text-end">
+                    <a th:href="@{/clinic/reports/export(year=${selectedYear})}" class="btn btn-success fw-bold text-white">
+                        <i class="fas fa-file-csv me-2"></i> Xuất Báo cáo CSV
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card bg-gradient-primary">
+                <div>
+                    <h6 class="text-uppercase mb-1" style="opacity: 0.9;">Tổng Doanh Thu</h6>
+                    <h2 class="mb-0 fw-bold">
+                        <span th:text="${totalRevenue != null ? #numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT') : '0'}">0</span> đ
+                    </h2>
+                </div>
+                <i class="fas fa-dollar-sign card-icon"></i>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="stat-card bg-gradient-success">
+                <div>
+                    <h6 class="text-uppercase mb-1" style="opacity: 0.9;">Tổng Gói Đã Bán</h6>
+                    <h2 class="mb-0 fw-bold" th:text="${totalCount ?: 0}">0</h2>
+                </div>
+                <i class="fas fa-shopping-cart card-icon"></i>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="stat-card bg-gradient-warning">
+                <div>
+                    <h6 class="text-uppercase mb-1" style="opacity: 0.9;">Trung Bình / Đơn</h6>
+                    <h2 class="mb-0 fw-bold">
+                        <span th:if="${totalCount != null and totalCount > 0}" 
+                              th:text="${#numbers.formatDecimal(totalRevenue / totalCount, 0, 'COMMA', 0, 'POINT')}">0</span>
+                        <span th:unless="${totalCount != null and totalCount > 0}">0</span> đ
+                    </h2>
+                </div>
+                <i class="fas fa-crown card-icon"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header py-3 bg-white">
+                    <h6 class="m-0 fw-bold text-primary">Biểu đồ Doanh thu Năm <span th:text="${selectedYear}"></span></h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header py-3 bg-white">
+                    <h6 class="m-0 fw-bold text-primary">Tỷ lệ Gói Dịch vụ</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="packagePieChart"></canvas>
+                    </div>
+                    <div class="mt-3 text-center small text-muted">
+                        * Tỷ trọng các gói dịch vụ khách hàng đã mua
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        // --- 1. NHẬN DỮ LIỆU TỪ CONTROLLER ---
+        // Sử dụng cú pháp an toàn của Thymeleaf để lấy dữ liệu, nếu null thì trả về mảng rỗng/giá trị mặc định
+        var revenueData = /*[[${monthlyRevenueList != null ? monthlyRevenueList : {0,0,0,0,0,0,0,0,0,0,0,0}}]]*/ [0,0,0,0,0,0,0,0,0,0,0,0];
+        var pkgLabels   = /*[[${pkgLabels != null ? pkgLabels : {}}]]*/ [];
+        var pkgValues   = /*[[${pkgData != null ? pkgData : {}}]]*/ [];
+
+        // Debug: In ra console để kiểm tra (Nhấn F12 -> Console để xem)
+        console.log("Revenue Data:", revenueData);
+        console.log("Package Labels:", pkgLabels);
+        console.log("Package Values:", pkgValues);
+
+        // Cấu hình Font mặc định
+        Chart.defaults.font.family = 'Nunito';
+        Chart.defaults.color = '#858796';
+
+        // --- 2. VẼ BIỂU ĐỒ DOANH THU (BAR CHART) ---
+        const ctxRevenue = document.getElementById('revenueChart');
+        if (ctxRevenue) {
+            new Chart(ctxRevenue, {
+                type: 'bar',
+                data: {
+                    labels: ['Thg 1', 'Thg 2', 'Thg 3', 'Thg 4', 'Thg 5', 'Thg 6', 'Thg 7', 'Thg 8', 'Thg 9', 'Thg 10', 'Thg 11', 'Thg 12'],
+                    datasets: [{
+                        label: 'Doanh thu (VNĐ)',
+                        data: revenueData,
+                        backgroundColor: '#4e73df',
+                        hoverBackgroundColor: '#2e59d9',
+                        borderRadius: 5,
+                        barPercentage: 0.6
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) { return new Intl.NumberFormat('vi-VN').format(value) + ' đ'; }
+                            },
+                            grid: { borderDash: [2] }
+                        },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(context.raw);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- 3. VẼ BIỂU ĐỒ TRÒN (PIE CHART) ---
+        const ctxPie = document.getElementById('packagePieChart');
+        if (ctxPie) {
+            if (pkgLabels && pkgLabels.length > 0) {
+                // Tạo mảng màu động
+                const baseColors = ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796'];
+                
+                new Chart(ctxPie, {
+                    type: 'doughnut',
+                    data: {
+                        labels: pkgLabels,
+                        datasets: [{
+                            data: pkgValues,
+                            backgroundColor: baseColors.slice(0, pkgLabels.length),
+                            borderWidth: 2,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        cutout: '70%',
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                                labels: { usePointStyle: true, padding: 20 }
+                            }
+                        }
+                    }
+                });
+            } else {
+                // Nếu không có dữ liệu, hiển thị thông báo
+                ctxPie.parentElement.innerHTML = 
+                    '<div class="d-flex flex-column align-items-center justify-content-center h-100 text-muted">' +
+                    '<i class="fas fa-chart-pie fa-3x mb-3 opacity-25"></i>' +
+                    '<span>Chưa có dữ liệu phân bố gói</span></div>';
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

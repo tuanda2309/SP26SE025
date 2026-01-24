@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AURA - Chi tiết chẩn đoán</title>
+
+    <!-- Bootstrap 5 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background: #f6f8fb;
+      }
+
+      .card-soft {
+        border: 1px solid #e9edf5;
+        border-radius: 16px;
+        overflow: hidden;
+      }
+
+      .shadow-soft {
+        box-shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
+      }
+
+      .soft-btn {
+        border-radius: 12px;
+      }
+
+      .img-wrap {
+        background: #0b1220;
+        min-height: 540px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .risk-pill {
+        border-radius: 999px;
+        padding: 8px 14px;
+        font-weight: 800;
+        display: inline-block;
+      }
+
+      .risk-high {
+        background: #ffebee;
+        color: #c62828;
+      }
+
+      .risk-medium {
+        background: #fff8e1;
+        color: #f57f17;
+      }
+
+      .risk-low {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .muted-box {
+        background: #f8fafc;
+        border: 1px dashed #e2e8f0;
+        border-radius: 12px;
+        padding: 10px 12px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container-fluid py-3">
+      <!-- Header -->
+      <div
+        class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3"
+      >
+        <div>
+          <div class="text-muted small">AURA Doctor / Review</div>
+          <h3 class="mb-0 fw-bold">👁️ Chi tiết chẩn đoán</h3>
+        </div>
+
+        <div class="d-flex gap-2">
+          <a href="/doctor/home" class="btn btn-outline-secondary soft-btn">
+            ← Quay lại
+          </a>
+
+          <a href="/logout" class="btn btn-outline-dark soft-btn">
+            Đăng xuất
+          </a>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <!-- Left: Image -->
+        <div class="col-12 col-lg-8">
+          <div class="card card-soft shadow-soft h-100">
+            <div
+              class="card-header bg-white d-flex justify-content-between align-items-center"
+            >
+              <div class="fw-bold">Ảnh đáy mắt (Fundus)</div>
+
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-light active">Fundus</button>
+                <button class="btn btn-outline-danger">Heatmap</button>
+                <button class="btn btn-outline-secondary">Zoom</button>
+              </div>
+            </div>
+
+            <div class="img-wrap p-3">
+              <div class="text-center">
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/2/23/Fundus_photograph_of_normal_right_eye.jpg"
+                  alt="Retina"
+                  style="
+                    max-height: 520px;
+                    max-width: 100%;
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    border-radius: 12px;
+                  "
+                />
+                <div class="text-white-50 small mt-2">
+                  Image ID: <b>IMG-2025-001</b> • Patient:
+                  <b>SP26-001</b>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Panels -->
+        <div class="col-12 col-lg-4">
+          <!-- AI Analysis -->
+          <div class="card card-soft shadow-soft mb-3">
+            <div class="card-header bg-primary text-white fw-bold">
+              🤖 Phân tích AI (AURA)
+            </div>
+
+            <div class="card-body">
+              <div
+                class="d-flex justify-content-between align-items-center mb-2"
+              >
+                <span class="risk-pill risk-high"> Nguy cơ: HIGH </span>
+                <span class="text-muted small"> Confidence: <b>92.5%</b> </span>
+              </div>
+
+              <div class="muted-box small mb-2">
+                <b>AI Summary:</b><br />
+                Phát hiện dấu hiệu bất thường mạch máu võng mạc, có nguy cơ bệnh
+                lý, cần bác sĩ xác nhận.
+              </div>
+
+              <ul class="list-group list-group-flush small mb-2">
+                <li class="list-group-item">
+                  ⚠️ Microaneurysms (xuất huyết vi mô)
+                </li>
+                <li class="list-group-item">⚠️ Tĩnh mạch giãn nở bất thường</li>
+              </ul>
+
+              <div class="muted-box small">
+                <b>Giải thích AI:</b><br />
+                Vùng màu đỏ trên heatmap biểu thị khu vực AI đánh giá có nguy cơ
+                tổn thương mạch máu cao.
+              </div>
+
+              <div class="text-muted small mt-2">
+                AI Model: <b>AURA-v1.2</b> • Threshold: <b>0.85</b><br />
+                Analyzed at: <b>2025-03-18 14:22</b>
+              </div>
+            </div>
+          </div>
+
+          <!-- Doctor Conclusion -->
+          <div class="card card-soft shadow-soft">
+            <div class="card-header bg-success text-white fw-bold">
+              👨‍⚕️ Kết luận Bác sĩ
+            </div>
+
+            <div class="card-body">
+              <!-- Backend sau: action="/doctor/confirm" method="post" -->
+              <form>
+                <div class="mb-3">
+                  <label class="form-label fw-bold"> Chẩn đoán </label>
+                  <textarea
+                    class="form-control"
+                    rows="3"
+                    placeholder="Nhập chẩn đoán lâm sàng..."
+                  ></textarea>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-bold"> Khuyến nghị </label>
+                  <textarea
+                    class="form-control"
+                    rows="3"
+                    placeholder="Hướng dẫn theo dõi, điều trị hoặc chuyển tuyến..."
+                  ></textarea>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label fw-bold"> Mức độ kết luận </label>
+                  <select class="form-select">
+                    <option>High</option>
+                    <option>Medium</option>
+                    <option>Low</option>
+                  </select>
+                </div>
+
+                <div class="mb-3 form-check">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    id="confirmAI"
+                  />
+                  <label class="form-check-label" for="confirmAI">
+                    Kết quả AI phù hợp với đánh giá lâm sàng
+                  </label>
+                </div>
+
+                <div class="d-grid gap-2">
+                  <button type="button" class="btn btn-success soft-btn">
+                    ✅ Xác nhận & gửi kết quả
+                  </button>
+
+                  <a
+                    href="/doctor/home"
+                    class="btn btn-outline-secondary soft-btn"
+                  >
+                    Quay lại danh sách
+                  </a>
+                </div>
+
+                <div class="text-muted small mt-3">
+                  ⚠️ AURA là công cụ hỗ trợ quyết định lâm sàng (CDS). Bác sĩ
+                  chịu trách nhiệm cho kết luận cuối cùng.
+                </div>
+
+                <div class="text-muted small mt-1">
+                  ✔ Mọi thao tác của bác sĩ được ghi nhận cho mục đích kiểm toán
+                  và truy vết y khoa.
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Clinic Management</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/admin/css/base.css}">
+    <link rel="stylesheet" th:href="@{/admin/css/clinics.css}">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>ADMIN</h2>
+    <a href="/admin/home">Dashboard</a>
+    <a href="/admin/users">Users</a>
+    <a href="/admin/doctors">Doctors</a>
+    <a href="/admin/clinics" class="active">Clinics</a>
+    <a href="/admin/packages">Packages</a>
+    <a href="/admin/ai-management">AI Management</a>
+    <a href="http://localhost:8080/admin/notifications">Notifications</a>
+    <a href="/admin/reports">Reports</a>
+</div>
+
+<div class="main">
+    <h1>Clinic Management</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Clinic Name</th>
+                <th>Address</th>
+                <th>Phone</th>
+                <th>Action</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <!-- 🔴 KHÔNG HARD-CODE -->
+        <tbody id="clinicTable">
+            <!-- JS render -->
+        </tbody>
+    </table>
+</div>
+
+<!-- JS -->
+<script src="/admin/js/clinics.js"></script>
+
+</body>
+</html>

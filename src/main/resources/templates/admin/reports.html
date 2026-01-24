@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctor Management</title>
+    <link rel="stylesheet" th:href="@{/admin/css/base.css}">
+   <link rel="stylesheet" th:href="@{/admin/css/report.css}">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>ADMIN</h2>
+    <a href="http://localhost:8080/admin/home">Dashboard</a>
+    <a href="http://localhost:8080/admin/users">Users</a>
+    <a href="http://localhost:8080/admin/doctors" class="active">Doctors</a>
+    <a href="http://localhost:8080/admin/clinics">Clinics</a>
+    <a href="http://localhost:8080/admin/packages">Packages</a>
+    <a href="http://localhost:8080/admin/ai">AI Management</a>
+    <a href="http://localhost:8080/admin/notifications">Notifications</a>
+    <a href="http://localhost:8080/admin/reports">Reports</a>
+</div>
+<div class="main">
+    <h1>Reports & Statistics</h1>
+
+    <div class="cards">
+        <div class="card">Total Images<br><b>1340</b></div>
+        <div class="card">High Risk<br><b>320</b></div>
+        <div class="card">Medium Risk<br><b>540</b></div>
+        <div class="card">Low Risk<br><b>480</b></div>
+    </div>
+
+    <h3>Export Reports</h3>
+    <button onclick="exportCSV()">Export CSV</button>
+    <button onclick="exportPDF()">Export PDF</button>
+
+    <h3 style="margin-top:20px;">Recent Analysis</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Clinic</th>
+                <th>Risk Level</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>AN-001</td>
+                <td>Vision Care</td>
+                <td>High</td>
+                <td>25/12/2025</td>
+            </tr>
+            <tr>
+                <td>AN-002</td>
+                <td>Eye Health</td>
+                <td>Medium</td>
+                <td>26/12/2025</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="../../static/admin/js/report.js"></script>
+</body>
+</html>

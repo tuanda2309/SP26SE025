@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Báo cáo theo tháng</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f6f8; margin: 40px; color: #333; }
+    h2 { color: #2c3e50; margin-top: 40px; }
+    canvas { margin-top: 20px; margin-bottom: 60px; background: #fff; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 20px; }
+  </style>
+</head>
+<body>
+
+<h2>📊 Lượt đặt **Xét nghiệm** theo tháng</h2>
+<canvas id="stiTestChart" width="900" height="420"></canvas>
+
+<h2>📊 Lượt đặt **Tư vấn** theo tháng</h2>
+<canvas id="consultationChart" width="900" height="420"></canvas>
+
+<!-- Dữ liệu ẩn Thymeleaf -->
+<ul id="stiData" style="display:none;">
+  <li th:each="item : ${stiTestStats}" th:data-month="${item.month}" th:data-count="${item.count}"></li>
+</ul>
+
+<ul id="consultationData" style="display:none;">
+  <li th:each="item : ${consultationStats}" th:data-month="${item.month}" th:data-count="${item.count}"></li>
+</ul>
+
+<script>
+  function extractData(id) {
+    const labels = [];
+    const data = [];
+    document.querySelectorAll(`#${id} li`).forEach(li => {
+      labels.push(li.dataset.month);
+      data.push(parseInt(li.dataset.count));
+    });
+    return { labels, data };
+  }
+
+  const sti = extractData("stiData");
+  const cons = extractData("consultationData");
+
+  const createBarChart = (ctxId, chartLabel, labels, data, bgColor, borderColor) => {
+    const ctx = document.getElementById(ctxId).getContext("2d");
+
+    // Create vertical gradient for bars
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, bgColor);
+    gradient.addColorStop(1, '#ffffff');
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: chartLabel,
+          data: data,
+          backgroundColor: gradient,
+          borderColor: borderColor,
+          borderWidth: 2,
+          borderRadius: 6,
+          barPercentage: 0.6,
+          categoryPercentage: 0.5
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: '#333',
+            titleColor: '#fff',
+            bodyColor: '#fff',
+            borderColor: '#999',
+            borderWidth: 1,
+            padding: 10,
+            callbacks: {
+              label: ctx => ` 🔢 ${ctx.raw} lượt`
+            }
+          },
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1,
+              font: { size: 14 }
+            },
+            title: {
+              display: true,
+              text: 'Số lượt',
+              font: { size: 14, weight: 'bold' }
+            },
+            grid: { color: '#eee' }
+          },
+          x: {
+            ticks: {
+              font: { size: 13 }
+            },
+            title: {
+              display: true,
+              text: 'Tháng',
+              font: { size: 14, weight: 'bold' }
+            },
+            grid: { display: false }
+          }
+        }
+      }
+    });
+  }
+
+  // Create 2 beautiful bar charts
+  createBarChart("stiTestChart", "Lượt đặt xét nghiệm", sti.labels, sti.data, 'rgba(54, 162, 235, 0.7)', 'rgba(54, 162, 235, 1)');
+  createBarChart("consultationChart", "Lượt đặt tư vấn", cons.labels, cons.data, 'rgba(255, 99, 132, 0.7)', 'rgba(255, 99, 132, 1)');
+</script>
+
+</body>
+</html>

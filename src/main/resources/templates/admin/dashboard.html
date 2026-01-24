@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctor Management</title>
+    <link rel="stylesheet" th:href="@{/admin/css/base.css}">
+   <link rel="stylesheet" th:href="@{/admin/css/dashboard.css}">
+</head>
+<body>
+    <div class="sidebar">
+    <h2>ADMIN</h2>
+    <a href="http://localhost:8080/admin/home">Dashboard</a>
+    <a href="http://localhost:8080/admin/users">Users</a>
+    <a href="http://localhost:8080/admin/doctors" class="active">Doctors</a>
+    <a href="http://localhost:8080/admin/clinics">Clinics</a>
+    <a href="http://localhost:8080/admin/packages">Packages</a>
+    <a href="http://localhost:8080/admin/ai">AI Management</a>
+    <a href="http://localhost:8080/admin/reports">Reports</a>
+</div>
+<div class="main">
+    <h1>Dashboard</h1>
+    <div class="cards">
+        <div class="card">Users</div>
+        <div class="card">Doctors</div>
+        <div class="card">Clinics</div>
+        <div class="card">Images</div>
+    </div>
+
+    <h3>System Status</h3>
+    <p>AI Engine: <span class="status online">ONLINE</span></p>
+</div>
+
+</body>
+</html>

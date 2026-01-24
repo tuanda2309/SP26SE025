@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lịch sử Phân tích AI - AURA</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        body {
+            background: #f4f7f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .hero-section {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 50px 0;
+            margin-bottom: 30px;
+            border-radius: 0 0 30px 30px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .status-high {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .status-low {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .table img {
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-back {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .btn-back:hover {
+            color: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hero-section text-center position-relative">
+        <a th:href="@{/customer/home}" class="btn-back"><i class="fas fa-arrow-left me-2"></i> Quay lại Dashboard</a>
+        <div class="container">
+            <h1 class="fw-bold"><i class="fas fa-history me-3"></i>Lịch sử Phân tích AI</h1>
+            <p class="lead opacity-75">Xem lại tất cả các chẩn đoán và báo cáo chi tiết từ hệ thống AI.</p>
+        </div>
+    </div>
+
+    <div class="container pb-5">
+        <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm mb-4"
+            role="alert">
+            <i class="fas fa-check-circle me-2"></i> <strong>Thành công!</strong> Phân tích hình ảnh đã hoàn tất và kết
+            quả đã được lưu.
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="card overflow-hidden">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
+                <h5 class="fw-bold mb-0 text-dark">Danh sách báo cáo</h5>
+                <a th:href="@{/customer/reports/upload}" class="btn btn-primary btn-sm rounded-pill px-3">
+                    <i class="fas fa-plus me-1"></i> Phân tích mới
+                </a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light text-muted uppercase small fw-bold">
+                            <tr>
+                                <th class="ps-4 py-3">Ngày thực hiện</th>
+                                <th class="py-3">Hình ảnh</th>
+                                <th class="py-3">Kết quả chẩn đoán</th>
+                                <th class="text-end pe-4 py-3">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="item : ${historyList}">
+                                <td class="ps-4">
+                                    <div class="fw-bold text-dark"
+                                        th:text="${#temporals.format(item.createdAt, 'HH:mm dd/MM/yyyy')}"></div>
+                                    <small class="text-muted">ID: #<span th:text="${item.id}"></span></small>
+                                </td>
+                                <td>
+                                    <img th:src="${item.imageUrl}" width="70" height="50"
+                                        class="object-fit-cover shadow-sm">
+                                </td>
+                                <td>
+                                    <div class="ai-display" th:attr="data-json=${item.aiResult}">
+                                        <span class="loading-text small text-muted">Đang tải...</span>
+                                    </div>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group">
+                                        <button class="btn btn-outline-info btn-sm rounded-pill me-2 px-3"
+                                            th:onclick="'viewDetails(' + ${item.id} + ')'">
+                                            <i class="fas fa-eye me-1"></i> Chi tiết
+                                        </button>
+                                        <a th:href="@{'/customer/reports/export/' + ${item.id}}"
+                                            class="btn btn-outline-danger btn-sm rounded-circle" title="Tải PDF">
+                                            <i class="fas fa-file-pdf"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(historyList)}">
+                                <td colspan="4" class="text-center py-5">
+                                    <img src="https://cdni.iconscout.com/illustration/premium/thumb/no-data-found-8867280-7223932.png"
+                                        height="150" class="mb-3 opacity-50">
+                                    <h5 class="text-muted">Bạn chưa thực hiện phân tích nào.</h5>
+                                    <a th:href="@{/customer/reports/upload}"
+                                        class="btn btn-primary mt-3 rounded-pill px-4">Bắt đầu ngay</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Xem Chi Tiết -->
+    <div class="modal fade" id="detailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow" style="border-radius: 20px;">
+                <div class="modal-header bg-dark text-white" style="border-radius: 20px 20px 0 0;">
+                    <h5 class="fw-bold mb-0">Chi tiết Báo cáo AI</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4" id="modalContent">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('.ai-display').forEach(div => {
+            try {
+                const json = JSON.parse(div.dataset.json);
+                if (json.error) {
+                    div.innerHTML = `<span class="text-danger small"><i class="fas fa-exclamation-circle me-1"></i> ${json.error}</span>`;
+                } else if (json.analysis) {
+                    const risk = json.analysis.overall_risk;
+                    const badgeClass = risk === 'HIGH' ? 'status-high' : 'status-low';
+                    div.innerHTML = `
+                        <span class="status-badge ${badgeClass} mb-1 d-inline-block">${risk} RISK</span>
+                        <div class="small text-truncate" style="max-width: 250px;">${json.analysis.clinical_impression}</div>
+                    `;
+                } else {
+                    div.innerHTML = `<span class="text-muted small">${div.dataset.json.substring(0, 30)}...</span>`;
+                }
+            } catch (e) {
+                div.innerHTML = `<span class="text-muted small">${div.dataset.json}</span>`;
+            }
+        });
+
+        function viewDetails(id) {
+            const row = Array.from(document.querySelectorAll('tbody tr')).find(r => r.innerText.includes('ID: #' + id));
+            const jsonStr = row.querySelector('.ai-display').dataset.json;
+            const json = JSON.parse(jsonStr);
+
+            let html = `
+                <div class="row">
+                    <div class="col-md-5 text-center">
+                        <img src="${row.querySelector('img').src}" class="img-fluid rounded-4 shadow mb-3 border">
+                        <div class="alert alert-light border small text-muted">Hình ảnh phân tích</div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="d-flex align-items-center mb-3">
+                            <h4 class="fw-bold text-dark mb-0 me-3">Chẩn đoán</h4>
+                            <span class="status-badge ${json.analysis.overall_risk === 'HIGH' ? 'status-high' : 'status-low'}">
+                                ${json.analysis.overall_risk} RISK
+                            </span>
+                        </div>
+                        <div class="p-3 bg-light rounded-4 mb-4 border-start border-4 ${json.analysis.overall_risk === 'HIGH' ? 'border-danger' : 'border-success'}">
+                            <p class="mb-2"><strong>Nhận định:</strong> ${json.analysis.clinical_impression}</p>
+                            <p class="mb-0 text-success fw-bold"><strong>Khuyến nghị:</strong> ${json.analysis.recommendation}</p>
+                        </div>
+                        
+                        <h6 class="fw-bold mb-3 text-secondary">Tỉ lệ xác suất dự đoán (%)</h6>
+                        ${json.predictions.map(p => `
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="small fw-semibold text-dark">
+                                        ${p.detected ? '<i class="fas fa-exclamation-circle text-danger me-1"></i>' : '<i class="fas fa-check-circle text-success me-1"></i>'}
+                                        ${p.display_name}
+                                    </span>
+                                    <span class="small ${p.detected ? 'text-danger fw-bold' : 'text-success'}">${(p.probability * 100).toFixed(1)}%</span>
+                                </div>
+                                <div class="progress" style="height: 10px; border-radius: 10px; background-color: #e9ecef;">
+                                    <div class="progress-bar ${p.detected ? 'bg-danger' : 'bg-success'} progress-bar-striped progress-bar-animated" 
+                                         role="progressbar"
+                                         style="width: ${p.probability * 100}%"></div>
+                                </div>
+                                ${p.detected ? `<div class="small text-danger mt-1 italic" style="font-size: 0.75rem;">${p.description}</div>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('modalContent').innerHTML = html;
+            new bootstrap.Modal(document.getElementById('detailModal')).show();
+        }
+    </script>
+</body>
+
+</html>
