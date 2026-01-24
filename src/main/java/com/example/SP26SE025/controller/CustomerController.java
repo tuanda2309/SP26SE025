@@ -239,11 +239,11 @@ public class CustomerController {
     }
 
     // --- 5. PLACEHOLDERS ---
-    @GetMapping("/customer/reports/analysis")
-    public String showAnalysis(Model model) {
-        model.addAttribute("historyList", new ArrayList<>());
-        return "customer/analysis_report";
-    }
+    // @GetMapping("/customer/reports/analysis")
+    // public String showAnalysis(Model model) {
+    //     model.addAttribute("historyList", new ArrayList<>());
+    //     return "customer/analysis_report";
+    // }
 
     @GetMapping({"/customer/upload", "/customer/doctor-chat"})
     public String redirectTemp() {
